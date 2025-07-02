@@ -1,7 +1,5 @@
 # Blake2Kit
 
-[![Release](https://github.com/Wanwire/Blake2Kit/actions/workflows/release.yml/badge.svg)](https://github.com/Wanwire/Blake2Kit/actions/workflows/release.yml)
-
 [Download](https://github.com/Wanwire/Blake2Kit/releases/latest "download latest release")
 
 ### Usage
