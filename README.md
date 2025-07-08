@@ -13,6 +13,8 @@ if let sequentialBlake2s = Blake2.SequentialBlake2s() {
     sequentialBlake2s.update("Hello, ".data(using: .utf8)!)
     sequentialBlake2s.update("world!".data(using: .utf8)!)
     let hash2 = sequentialBlake2s.final()
+
+    print("\(hash1) == \(hash2)")
 }
 
 ```
