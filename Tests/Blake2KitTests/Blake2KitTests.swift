@@ -46,7 +46,7 @@ import Foundation
 @Test func testBlake2sWithTooLongKey() async throws {
     let message = "Hello, world!".data(using: .utf8)!
     let tooLongKey = "123456789012345678901234567890123".data(using: .utf8)!
-   
+    
     let hash = Blake2.blake2s(data: message, key: tooLongKey)
     
     #expect(hash == nil)
@@ -95,10 +95,45 @@ import Foundation
 @Test func testBlake2bWithTooLongKey() async throws {
     let message = "Hello, world!".data(using: .utf8)!
     let tooLongKey = "12345678901234567890123456789012345678901234567890123456789012345".data(using: .utf8)!
-   
+    
     let hash = Blake2.blake2b(data: message, key: tooLongKey)
     
     #expect(hash == nil)
+}
+
+@Test func testSequentialBlake2s() async throws {
+    let message = "Hello, world!".data(using: .utf8)!
+    let expectedLength = Blake2.Blake2sConstant.outBytes
+    let hash1 = Blake2.blake2s(data: message, outputLength: expectedLength)
+    
+    let sequentialBlake2s = Blake2.SequentialBlake2s(outputLength: expectedLength)
+    sequentialBlake2s?.update(message)
+    let hash2 = sequentialBlake2s?.final()
+    
+    #expect(hash1 != nil)
+    #expect(hash1?.count == expectedLength)
+    #expect(hash1!.hexString() == "30d8777f0e178582ec8cd2fcdc18af57c828ee2f89e978df52c8e7af078bd5cf")
+    #expect(hash2 != nil)
+    #expect(hash2?.count == expectedLength)
+    #expect(hash1 == hash2)
+}
+
+@Test func testSequentialBlake2sSequence() async throws {
+    let message = "Hello, world!".data(using: .utf8)!
+    let expectedLength = Blake2.Blake2sConstant.outBytes
+    let hash1 = Blake2.blake2s(data: message, outputLength: expectedLength)
+    
+    let sequentialBlake2s = Blake2.SequentialBlake2s(outputLength: expectedLength)
+    sequentialBlake2s?.update("Hello, ".data(using: .utf8)!)
+    sequentialBlake2s?.update("world!".data(using: .utf8)!)
+    let hash2 = sequentialBlake2s?.final()
+    
+    #expect(hash1 != nil)
+    #expect(hash1?.count == expectedLength)
+    #expect(hash1!.hexString() == "30d8777f0e178582ec8cd2fcdc18af57c828ee2f89e978df52c8e7af078bd5cf")
+    #expect(hash2 != nil)
+    #expect(hash2?.count == expectedLength)
+    #expect(hash1 == hash2)
 }
 
 fileprivate extension Data {
